@@ -1,13 +1,17 @@
+// import { URL } from "url"
 
+const startButton = document.querySelector('.start')
 const rec = document.querySelector('.rec')
 const stop = document.querySelector('.stop')
-const info = document.querySelector('.info')
+const download = document.querySelector('.download')
 
 // проверка поддерживает ли браузер navigator.mediaDevices.getUserMedia
 const hasGetUserMedia = () => {
   return !!(navigator.mediaDevices &&
     navigator.mediaDevices.getUserMedia);
 }
+
+
 if (hasGetUserMedia()) {
   console.log('works');
 } else {
@@ -17,25 +21,23 @@ if (hasGetUserMedia()) {
 
 // доступ к камере
 
+let recBlobs = [];
+
 
 const video = document.querySelector('video');
 console.log(video);
+
+startButton.onclick = () => userStream();
+
 const userStream = () => navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true,
 }).then((stream) => {
   const mediaRecorder = new MediaRecorder(stream);
 
-  let recBlobs = [];
-  function handleDataAvailable(event) {
-    if (event.data && event.data.size > 0) {
-      recBlobs.push(event.data);   
-    }
-  }
-
-  rec.onclick = function () {
-    mediaRecorder.start(10);
-    mediaRecorder.ondataavailable = handleDataAvailable;
+  rec.onclick = () => {
+    mediaRecorder.start(10000000000);
+    mediaRecorder.ondataavailable = (e) => recBlobs.push(e.data);
     console.log('MediaRecorder started', mediaRecorder);
     mediaRecorder.requestData();
     console.log(mediaRecorder.state);
@@ -44,7 +46,7 @@ const userStream = () => navigator.mediaDevices.getUserMedia({
     rec.disabled = true;
   }
 
-  stop.onclick = async function () {
+  stop.onclick = () => {
     mediaRecorder.stop();
     console.log(mediaRecorder.state);
     console.log("recorder stopped");
@@ -53,20 +55,20 @@ const userStream = () => navigator.mediaDevices.getUserMedia({
     stop.disabled = true;
     rec.disabled = false;
     console.log(recBlobs);
-    const videoURL = window.URL.createObjectURL(recBlobs);
   }
 
   video.srcObject = stream
 });
 
-info.onclick = function () {
-  let myStream = mediaRecorder.stream;
-}
+download.onclick = () => {
 
-const startButton = document.querySelector('.start')
-console.log(startButton);
 
-startButton.addEventListener('click', () => {
-  userStream();
-})
+let link = document.createElement('a');
+link.download = 'hello.webm';
+link.href = URL.createObjectURL(recBlobs[1])
 
+link.click();
+
+URL.revokeObjectURL(link.href);
+
+};

@@ -1,0 +1,17 @@
+{
+  "cookie": {
+    "originalMaxAge": 3600,
+    "expires": "2019-10-10T12:04:52.483Z",
+    "httpOnly": true,
+    "path": "/"
+  },
+  "user": {
+    "createdAt": "2019-10-10T11:34:33.164Z",
+    "_id": "5d9f17de0f0ddb6286957303",
+    "name": "Johny",
+    "email": "9364016@gmail.com",
+    "password": "$2b$10$fmPmc3pvec/DKQkd3NOXzeXZi/jly3xESwVYoxNtZjeKItd8EfXOy",
+    "__v": 0
+  },
+  "__lastAccess": 1570709088883
+}

@@ -1,0 +1,25 @@
+<ul class="no-bullets no-margin no-padding">
+  {{#if regOff}}
+  <li class="pipe-separate border-right left gray"><span>register</span></li>
+  {{else}}
+  {{#if loginOn}}
+  <li class="pipe-separate border-right left gray"><span>{{user.name}}</span></li>
+  {{else}}
+  <li class="pipe-separate border-right left"><a href="/users/new">register</a></li>
+  {{/if}}
+  {{/if}}
+  {{#if loginOff}}
+  <li class="pipe-separate border-right left gray"><span>login</span></li>
+  {{else}}
+  {{#if user.name}}
+  <li class="pipe-separate border-right left"><a class="logout" href="/users/logout">logout</a></li>
+  {{else}}
+  <li class="pipe-separate border-right left"><a href="/users/login">login</a></li>
+  {{/if}}
+  {{/if}}
+  {{#if mainOff}}
+  <li class="pipe-separate left gray"><span>home</span></li>
+  {{else}}
+  <li class="pipe-separate left"><a href="/">home</a></li>
+  {{/if}}
+</ul>

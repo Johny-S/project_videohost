@@ -1,3 +1,4 @@
+const User = require('../models/user');
 // This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
 // This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
 function cookiesCleaner(req, res, next) {
@@ -11,13 +12,28 @@ function cookiesCleaner(req, res, next) {
 // middleware function to check for logged-in users
 const sessionChecker = (req, res, next) => {
   if (req.session.user && req.cookies.user_sid) {
-    res.redirect('/entries');
+    res.render('entries/index', {
+      user: req.session.user,
+      loginOn: true,
+      mainOff: true
+    });
   } else {
     next();
   }
 };
 
-const isUser = (req, base) => {};
+const isUser = async (req, res, next) => {
+  const { username, email } = req.body;
+  const isName = await User.findOne({ name: username });
+  const isEmail = await User.findOne({ email });
+  if (!isName && !isEmail) {
+    next();
+  } else if (isName) {
+    res.render('./users/error', { isName });
+  } else {
+    res.render('./users/error', { isEmail });
+  }
+};
 
 module.exports = {
   sessionChecker,

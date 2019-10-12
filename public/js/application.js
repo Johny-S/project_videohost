@@ -1,8 +1,16 @@
 // import { URL } from "url"
 const startButton = document.querySelector('.start');
 const rec = document.querySelector('.rec');
+const recProc = document.querySelector('.rec-proc');
+const show = document.querySelector('.show');
+const recPlus = document.querySelector('.rec-plus');
+
+const video = document.querySelector('.video');
+console.log(video);
+
 const download = document.querySelector('.download');
 
+let recBlobs = [];
 // Таймер
 const timerBox = document.getElementById('timer');
 
@@ -39,12 +47,11 @@ if (hasGetUserMedia()) {
 
 // доступ к камере
 
-let recBlobs = [];
-
-const video = document.querySelector('video');
-console.log(video);
-
-startButton.onclick = () => userStream();
+startButton.onclick = () => {
+  userStream();
+  startButton.classList.toggle('hidden');
+  rec.classList.toggle('hidden');
+};
 
 const goRec = mediaRecorder => {
   // rec.style.background = 'red';
@@ -76,7 +83,41 @@ const goStop = mediaRecorder => {
 const goStream = stream => {
   const mediaRecorder = new MediaRecorder(stream);
 
-  rec.onclick = () => goRec(mediaRecorder);
+  rec.onclick = () => {
+    goRec(mediaRecorder);
+    rec.classList.toggle('hidden');
+    recProc.classList.toggle('hidden');
+  };
+
+  recProc.onclick = () => {
+    goStop(mediaRecorder);
+    recProc.classList.toggle('hidden');
+    show.classList.toggle('hidden');
+
+    let stream = video.srcObject;
+    let tracks = stream.getTracks();
+
+    tracks.forEach(e => {
+      e.stop();
+    });
+  };
+
+  show.onclick = () => {
+    show.classList.toggle('hidden');
+    recPlus.classList.toggle('hidden');
+    download.classList.toggle('hidden');
+
+    let link = document.createElement('a');
+    link.href = URL.createObjectURL(recBlobs[1]);
+
+    video.src = link.href;
+  };
+
+  recPlus.onclick = () => {
+    rec.classList.toggle('hidden');
+    recPlus.classList.toggle('hidden');
+    download.classList.toggle('hidden');
+  };
 
   video.srcObject = stream;
 };

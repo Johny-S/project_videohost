@@ -11,7 +11,7 @@ router.get('/new', function(req, res, next) {
   res.render('users/new');
 });
 
-router.post('/upload', type, (req, res) => {
+router.post('/upload', (req, res) => {
   console.log(req.body);
   console.log(req.file);
   res.send();

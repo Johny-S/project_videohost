@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 const hbs = require('express-handlebars');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const multer = require('multer');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');

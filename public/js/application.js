@@ -1,14 +1,10 @@
 // import { URL } from "url"
 const startButton = document.querySelector('.start');
 const rec = document.querySelector('.rec');
-const recProc = document.querySelector('.rec-proc');
-const show = document.querySelector('.show');
-const recPlus = document.querySelector('.rec-plus');
-
+const download = document.querySelector('.download');
+const off = document.querySelector('.off');
 const video = document.querySelector('.video');
 console.log(video);
-
-const download = document.querySelector('.download');
 
 let recBlobs = [];
 // Таймер
@@ -47,14 +43,12 @@ if (hasGetUserMedia()) {
 
 // доступ к камере
 
-startButton.onclick = () => {
-  userStream();
-  startButton.classList.toggle('hidden');
-  rec.classList.toggle('hidden');
-};
+
+
+
+startButton.onclick = () => userStream();
 
 const goRec = mediaRecorder => {
-  // rec.style.background = 'red';
   rec.style.color = 'red';
   rec.innerHTML = '&#149 rec &#149';
   rec.onclick = () => goStop(mediaRecorder);
@@ -71,53 +65,17 @@ const goRec = mediaRecorder => {
 const goStop = mediaRecorder => {
   mediaRecorder.stop();
   rec.onclick = () => goRec(mediaRecorder);
-  // rec.style.background = '';
   rec.style.color = '';
   rec.innerHTML = 'rec';
   startTimer.stop();
   console.log(mediaRecorder.state);
-  console.log('recorder stopped');
   console.log(recBlobs);
 };
 
 const goStream = stream => {
   const mediaRecorder = new MediaRecorder(stream);
 
-  rec.onclick = () => {
-    goRec(mediaRecorder);
-    rec.classList.toggle('hidden');
-    recProc.classList.toggle('hidden');
-  };
-
-  recProc.onclick = () => {
-    goStop(mediaRecorder);
-    recProc.classList.toggle('hidden');
-    show.classList.toggle('hidden');
-
-    let stream = video.srcObject;
-    let tracks = stream.getTracks();
-
-    tracks.forEach(e => {
-      e.stop();
-    });
-  };
-
-  show.onclick = () => {
-    show.classList.toggle('hidden');
-    recPlus.classList.toggle('hidden');
-    download.classList.toggle('hidden');
-
-    let link = document.createElement('a');
-    link.href = URL.createObjectURL(recBlobs[1]);
-
-    video.src = link.href;
-  };
-
-  recPlus.onclick = () => {
-    rec.classList.toggle('hidden');
-    recPlus.classList.toggle('hidden');
-    download.classList.toggle('hidden');
-  };
+  rec.onclick = () => goRec(mediaRecorder);
 
   video.srcObject = stream;
 };
@@ -130,6 +88,27 @@ const userStream = () => {
     })
     .then(goStream);
 };
+
+off.onclick = async () => {
+  let stream = video.srcObject
+  let tracks = stream.getTracks();
+
+  await tracks.forEach(function(track) {
+    track.stop();
+  });
+
+  video.srcObject = null;
+  
+  let link = document.createElement('a');
+  link.download = 'hello.webm';
+  link.href = URL.createObjectURL(recBlobs[1])
+
+  console.log(link.href);
+
+  video.src = link.href;
+}
+
+
 
 download.addEventListener('click', async e => {
   e.preventDefault();
